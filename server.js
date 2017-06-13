@@ -25,7 +25,7 @@ app.use(express.static('public'));
         graphiql: true
     }))
 
-    app.listen(3000 , () => console.log('You are live'));
+    app.listen(5000 , () => console.log('You are live on server 5000'));
 
 
     // Generate schema.json

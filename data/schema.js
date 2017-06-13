@@ -19,7 +19,7 @@ import {
 } from 'graphql-relay';
 // the graphql add the edges and node levels to the query
 
-
+import {ObjectId} from 'mongodb';
 
 let Schema = (db) =>{
 
@@ -48,7 +48,6 @@ let Schema = (db) =>{
             return null;
         }
     )
-
 
 
     let storeType = new GraphQLObjectType({
@@ -152,24 +151,71 @@ let createLinkMutation = mutationWithClientMutationId({
     }
 });
 
+const deleteLinkMutation = mutationWithClientMutationId({
+    name: 'deleteLink',
 
+    inputFields: {
+        id: { type: new GraphQLNonNull(GraphQLString)}
+    },
 
-///Simple mutation graphql only
-// const Mutation = new GraphQLObjectType({
-//             name: 'Mutation',
-//             fields: () => ({
-//                 incrementCounter: {
-//                     type: GraphQLInt,
-//                     resolve: () => ++counter
-//                 }
-//             })
-//         });
+    outputFields: {
+        //this is to return the cursor which is sort of an index id
+        linkEdge: {
+            type: linkConnection.edgeType,
+            resolve: (obj) => ({node: obj.ops[0] , cursor: obj.insertedId})
+        },
+         deletedId: { 
+            type: GraphQLString,
+            resolve: (obj) => {
+                return obj.CommandResult.id;
+
+            }
+        }
+    },
+
+    mutateAndGetPayload: ({ id }) => {
+        console.log(id);
+        return db.collection('links').remove({ _id: ObjectId(id) }).then((obj) => {
+           return {
+            CommandResult: {
+                id: id, 
+                clientMutationId: obj.clientMutationId
+            }
+           } 
+        });
+    }
+})
+
+// these below work without the ClientmutationId
+// const deleteLink = new GraphQLObjectType({
+//     name: 'deletedLink',
+//     description: 'deleted link by Id',
+//     fields: () => ({
+//         deletedId: { 
+//             type: GraphQLString,
+//             resolve: (id) => id
+//         }
+//     })
+// });
+
+// const deleteLinkMutation = {
+//     type: deleteLink,
+//     args: {
+//         id: {type: new GraphQLNonNull(GraphQLString)}
+//     },
+//     resolve: ( _ , {id}) => {
+//         console.log(id);
+//         return db.collection('links').remove({ _id: ObjectId(id) }).then(() => id);
+//     }
+// }
+
 
 //Mutation using Relay 
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: () => ({
-        createLink: createLinkMutation
+        createLink: createLinkMutation,
+        deleteLink: deleteLinkMutation
     })
 });
 
