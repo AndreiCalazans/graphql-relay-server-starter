@@ -35,6 +35,10 @@ export class LinkLoader {
     });
   }
 
+  static async counter() {
+    return Link.count({});
+  }
+
   static async loadWithConnection(args) {
     const links = await Link.find({}).sort({ createdAt: -1 });
 

@@ -1,6 +1,7 @@
 import {
   GraphQLObjectType,
   GraphQLString,
+  GraphQLInt,
 } from 'graphql';
 import { connectionArgs } from 'graphql-relay';
 import { NodeField } from '../interface/NodeInterface';
@@ -23,6 +24,11 @@ export const QueryType = new GraphQLObjectType({
         },
       },
       resolve: (obj, args) => LinkLoader.loadById(args.id),
+    },
+    linksCount: {
+      type: GraphQLInt,
+      description: 'Count of link on the DB',
+      resolve: () => LinkLoader.counter(),
     },
     AllLinks: {
       type: LinkConnection.connectionType,

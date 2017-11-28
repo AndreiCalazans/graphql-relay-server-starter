@@ -1,43 +1,107 @@
-<h2>#React + GraphQL + Relay</h2> 
+# React + GraphQL + Relay
+*The objective of this repo is to share a basic **without auth** graphql server, for others to learn and play around with**
+
+#GRAPHQL SET UP
+- yarn
+- yarn dev
+- yarn run update-schema // everytime you change the schema you must update it.
 
 
-<b>GRAPHQL SET UP</b>
-
-
-App uses yarn
-
-<b>to run dev server</b>
-
-yarn dev
-
-
-<b>#To Bundle</b>
-webpack -w -d   
-
-*make sure you have webpack installed globally.
-
-if you use npm please change the dev script to npm
-
-yarn dev runs developemnt server
-
-
-<b>#warning:</b>
-Schema.json file is being generated on every save***
-
-app hosted at localhost:3000
-
-access graphql at localhost:3000/graphql
-
-
-This is using react-relay version 0.10 make sure its not any higher versions.
-
-
-<b>#Database</b>
-
-It is using Mongodb and it is local hosted
+# Database
 Make sure your mongo service is running.
-
-a collection called graphql_tutorial will be created.
-
+A collection called `graphql_tutorial` will be created.
 
 
+# Play arround
+
+Open `http://localhost:5000/graphql` 
+
+### Query and Mutation examples in the GraphiQL 
+*Check out the Schema inside the docs tab for the whole schema.*
+
+
+`Query`
+
+``` 
+query allLinks {
+  linksCount
+  AllLinks(first: 20) {
+    edges {
+      node {
+        title
+        _id
+        url
+      }
+    }
+  }
+} 
+```
+
+
+`Mutations`
+```
+mutation createLink($input: CreateLinkInput!) {
+  createLink(input: $input) {
+    error {
+			message
+    }
+    AllLinks(first: 30) {
+			edges {
+        node {
+          _id
+          id
+          title
+        }
+      }
+    }
+		linkEdge {
+			node {
+        url
+        title
+        id
+        _id
+      }
+    }
+  }
+}
+```
+**variables to Create Link**
+``` 
+{
+  "input": {
+    "title": "Facebook",
+    "url": "www.facebook.com",
+    "clientMutationId": "32"
+  }
+} 
+```
+
+
+
+```
+mutation deleteLink($input: DeleteLinkInput!){
+  deleteLink(input: $input){
+    error {
+      message
+    }
+   AllLinks(first: 20) {
+    edges {
+      node {
+        title
+        id
+        _id
+      }
+    }
+  } 
+  }
+}
+```
+**variables to delete Link**
+``` 
+{
+  "input": {
+    "id": "5a1dd932ac310a0c1cf2d931",
+    "clientMutationId": "32"
+  }
+} 
+```
