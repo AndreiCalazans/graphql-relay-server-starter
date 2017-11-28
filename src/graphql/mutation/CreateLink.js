@@ -1,10 +1,9 @@
 import { GraphQLNonNull, GraphQLString } from 'graphql';
-import { mutationWithClientMutationId } from 'graphql-relay';
+import { mutationWithClientMutationId, connectionArgs, toGlobalId } from 'graphql-relay';
 
-// import { LinkConnection } from '../connection/LinkConnection';
+import LinkConnection from '../connection/LinkConnection';
 import { Link } from '../../model';
-// import { LinkType } from '../type/LinkType';
-// import { LinkLoader } from '../loader/LinkLoader';
+import { LinkLoader } from '../loader/LinkLoader';
 import { ErrorType } from '../type/ErrorType';
 
 export const CreateLink = mutationWithClientMutationId({
@@ -23,28 +22,30 @@ export const CreateLink = mutationWithClientMutationId({
       type: ErrorType,
       resolve: obj => obj.error ? obj.error : null,
     },
-    // linkEdge: {
-    //   type: LinkConnection.edgeType,
-    //   resolve: obj => ({
-    //     node: obj.ops[0],
-    //     cursor: obj.insertedId,
-    //   }),
-    // },
-    // Link: {
-    //   type: LinkType,
-    //   description: 'Get a link by its id',
-    //   args: {
-    //     id: {
-    //       type: GraphQLString,
-    //     },
-    //   },
-    //   resolve: (obj, args) => LinkLoader.loadById(args.id),
-    // },
+    AllLinks: {
+      type: LinkConnection.connectionType,
+      args: {
+        ...connectionArgs,
+      },
+      resolve: async (obj, args) => LinkLoader.loadWithConnection(args),
+    },
+    linkEdge: {
+      type: LinkConnection.edgeType,
+      resolve: obj => ({
+        node: obj,
+        cursor: toGlobalId('Link', obj._id),
+      }),
+    },
   },
 
-  mutateAndGetPayload: ({ title, url }) => new Link({
-    title,
-    url,
-    createdAt: Date.now(),
-  }).save(),
+  mutateAndGetPayload: async ({ title, url }) => {
+    const newLink = await new Link({
+      title,
+      url,
+      createdAt: Date.now(),
+    }).save();
+
+
+    return newLink;
+  },
 });

@@ -37,7 +37,6 @@ export class LinkLoader {
 
   static async loadWithConnection(args) {
     const links = await Link.find({}).sort({ createdAt: -1 });
-    console.log('LINKS', links);
 
     return connectionFromArray(links, args);
   }
