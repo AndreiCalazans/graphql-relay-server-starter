@@ -43,10 +43,10 @@ query allLinks {
 mutation createLink($input: CreateLinkInput!) {
   createLink(input: $input) {
     error {
-			message
+      message
     }
     AllLinks(first: 30) {
-			edges {
+      edges {
         node {
           _id
           id
@@ -54,8 +54,8 @@ mutation createLink($input: CreateLinkInput!) {
         }
       }
     }
-		linkEdge {
-			node {
+    linkEdge {
+      node {
         url
         title
         id
