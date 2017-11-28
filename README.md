@@ -1,10 +1,10 @@
 # React + GraphQL + Relay
-*The objective of this repo is to share a basic **without auth** graphql server, for others to learn and play around with**
+*The objective of this repo is to share a basic **without auth** graphql server, for others to learn and play around with*
 
-#GRAPHQL SET UP
-- yarn
-- yarn dev
-- yarn run update-schema // everytime you change the schema you must update it.
+## GRAPHQL SET UP
+- `yarn`
+- `yarn dev`
+- `yarn run update-schema` // every time you change the schema you must update it.
 
 
 # Database
@@ -12,7 +12,7 @@ Make sure your mongo service is running.
 A collection called `graphql_tutorial` will be created.
 
 
-# Play arround
+## Play arround
 
 Open `http://localhost:5000/graphql` 
 
